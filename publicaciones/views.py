@@ -104,11 +104,6 @@ def inicio(request):
         "total_miembros": total_miembros,
     }
 
-
-    contexto = {
-        "publicaciones_recientes": publicaciones_recientes
-    }
-
     return render(
         request,
         "publicaciones/inicio.html",
