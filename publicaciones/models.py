@@ -27,6 +27,8 @@ class Publicacion(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=20, choices=ESTADOS, default="borrador")
     url_imagen = models.ImageField(upload_to="posts/",blank=True,null=True)
+    # Usuarios que guardaron esta publicación como favorita
+    favoritos = models.ManyToManyField(settings.AUTH_USER_MODEL,related_name="publicaciones_guardadas",blank=True)
    
 
     class Meta:

@@ -40,6 +40,34 @@
                 </span>
             {% endif %}
 
+            {% if user.is_authenticated %}
+    <form
+        method="POST"
+        action="{% url 'alternar_favorito' publicacion.id %}"
+        class="favorito-form"
+    >
+        {% csrf_token %}
+
+        <input type="hidden" name="next" value="{{ request.path }}">
+
+        {% if user in publicacion.favoritos.all %}
+            <button type="submit" class="btn-favorito activo">
+                <span aria-hidden="true">♥</span>
+                Quitar de favoritos
+            </button>
+        {% else %}
+            <button type="submit" class="btn-favorito">
+                <span aria-hidden="true">♡</span>
+                Agregar a favoritos
+            </button>
+        {% endif %}
+    </form>
+{% else %}
+    <p class="favorito-login">
+        Iniciá sesión para guardar esta publicación en favoritos.
+    </p>
+{% endif %}
+
         <section>
             <h4>Calificacion de  esta publicacion</h4>
            <!-- SISTEMA DE CALIFICACIONES -->

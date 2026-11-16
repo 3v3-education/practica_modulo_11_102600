@@ -28,49 +28,77 @@
                 Autores
             </a>
 
+            {% if user.is_authenticated %}
+            <a href="{% url 'mis_favoritos' %}" class="nav-favoritos">
+             <span aria-hidden="true">♥</span>
+                Mis favoritos
+                </a>
+            {% endif %}
+
+
             <a href="{% url 'contacto' %}">
                 Contacto
             </a>
-
-            <a href="{% url 'lista_mensajes' %}">
-                Mensajes
-            </a>
 <!--Se estaba intentando acceder al perfil del usuario sin comprobar previamente que exista.-->
-            {% if user.is_authenticated %}
+{% if user.is_authenticated %}
 
-                {% if user.perfil_autor %}
-                    <span>
-                        <a href="{% url 'perfil_autor' user.perfil_autor.id %}">
-                            Hola, {{ user.username }}
-                        </a>
-                    </span>
+    {% if user.perfil_autor %}
 
-                    {% if user.perfil_autor.imagen %}
-                        <img
-                            src="{{ user.perfil_autor.imagen.url }}"
-                            alt="Avatar de {{ user.username }}"
-                            width="40"
-                            height="40"
-                            style="border-radius: 50%;">
-                    {% endif %}
+        <a href="{% url 'perfil_autor' user.perfil_autor.id %}"
+           class="user-profile-link">
 
-                {% else %}
-                    <span>
-                        Hola, {{ user.username }}
-                    </span>
+            <div class="user-profile">
+
+                {% if user.perfil_autor.imagen %}
+                    <img
+                        src="{{ user.perfil_autor.imagen.url }}"
+                        alt="Avatar de {{ user.username }}"
+                        class="user-avatar">
                 {% endif %}
 
-                <form method="POST" action="{% url 'cerrar_sesion' %}">
-                    {% csrf_token %}
-                    <button type="submit">Cerrar sesión</button>
-                </form>
+                <span class="user-name">
+                    Hola, {{ user.username }}
+                </span>
 
-            {% else %}
+            </div>
 
-                <a href="{% url 'login' %}">Iniciar sesión</a>
-                <a href="{% url 'registro' %}">Registrate</a>
+        </a>
 
-            {% endif %}
+    {% else %}
+        <span>Hola, {{ user.username }}</span>
+    {% endif %}
+
+<form method="POST" action="{% url 'cerrar_sesion' %}" class="logout-form">
+    {% csrf_token %}
+
+    <button type="submit" class="logout-button" 
+            aria-label="Cerrar sesión" 
+            title="Cerrar sesión">
+
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="22"
+             height="22"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="1.8"
+             stroke-linecap="round"
+             stroke-linejoin="round">
+
+            <path d="M10 17l5-5-5-5"/>
+            <path d="M15 12H3"/>
+            <path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"/>
+        </svg>
+
+    </button>
+</form>
+
+{% else %}
+
+    <a href="{% url 'login' %}">Iniciar sesión</a>
+    <a href="{% url 'registro' %}">Registrate</a>
+
+{% endif %}
 
             {% if user.is_authenticated and user.is_staff %}
                 <a href="{% url 'publicaciones_pendientes' %}">
@@ -85,6 +113,17 @@
         {% block content %}
         {% endblock %}
     </main>
+
+    {% if user.is_authenticated %}
+        <a href="{% url 'lista_mensajes' %}"
+           class="floating-message-button"
+           aria-label="Ir a mensajes"
+           title="Ver mensajes">
+
+            <span class="message-icon">✉</span>
+
+        </a>
+    {% endif %}
 
     <footer class="site-footer">
         <p>Creado con Django</p>

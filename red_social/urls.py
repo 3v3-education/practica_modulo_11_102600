@@ -44,7 +44,17 @@ urlpatterns = [
     path('cambiar_contraseña/',auth_views.PasswordChangeView.as_view(template_name= "autenticacion/cambiar_contraseña.html",
                                                                      success_url = reverse_lazy("login")),name="cambiar_contraseña"),
     path("mensajes/",views.lista_mensajes,name="lista_mensajes"),
-    path("chat/<int:autor_id>",views.conversacion,name="conversacion")
+    path("chat/<int:autor_id>",views.conversacion,name="conversacion"),
+    path(
+    "publicacion/<int:publicacion_id>/favorito/",
+    views.alternar_favorito,
+    name="alternar_favorito"
+),
+path(
+    "mis-favoritos/",
+    views.mis_favoritos,
+    name="mis_favoritos"
+),
 ]
 
 if settings.DEBUG:

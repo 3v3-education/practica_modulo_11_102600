@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.db.models import Avg, Count,Q
 from django.db import models
 from django.views.decorators.http import require_POST
+from django.contrib.auth import get_user_model
 
 from .models import Autor, Calificacion, Mensaje, Publicacion
 from .forms import (
@@ -71,10 +72,48 @@ def revisar_publicacion(request,publicacion_id):
 # ==========================================
 
 def inicio(request):
-    print("USUARIO:", request.user)
-    print("AUTENTICADO:", request.user.is_authenticated)
+    publicaciones_recientes = Publicacion.objects.filter(
+        estado="publicado"
+    ).order_by("-fecha_creacion")[:3]
 
-    return render(request, "publicaciones/inicio.html")
+    # Obtenemos los últimos cuatro autores registrados
+
+    autores_recientes = Autor.objects.order_by("-id")[:4]
+
+    # Modelo de usuarios configurado en Django
+    Usuario = get_user_model()
+
+    # Estadísticas de la comunidad
+    total_publicaciones = Publicacion.objects.filter(
+        estado="publicado"
+    ).count()
+
+    total_autores = Autor.objects.count()
+
+    total_miembros = Usuario.objects.filter(
+        is_active=True
+    ).count()
+
+
+    contexto = {
+        "publicaciones_recientes": publicaciones_recientes,
+        "autores_recientes": autores_recientes,
+        # Estadísticas
+        "total_publicaciones": total_publicaciones,
+        "total_autores": total_autores,
+        "total_miembros": total_miembros,
+    }
+
+
+    contexto = {
+        "publicaciones_recientes": publicaciones_recientes
+    }
+
+    return render(
+        request,
+        "publicaciones/inicio.html",
+        contexto
+    )
 
 
 # ==========================================
@@ -197,6 +236,65 @@ def detalle_publicacion(request, publicacion_id):
         "publicaciones/detalle_publicacion.html",
         contexto
     )
+
+# ==========================================
+# AGREGAR / QUITAR FAVORITOS
+# ==========================================
+
+@login_required
+def alternar_favorito(request, publicacion_id):
+
+    publicacion = get_object_or_404(
+        Publicacion,
+        id=publicacion_id,
+        estado="publicado"
+    )
+
+    if publicacion.favoritos.filter(id=request.user.id).exists():
+
+        # Si ya es favorita, la quitamos
+        publicacion.favoritos.remove(request.user)
+
+        messages.success(
+            request,
+            "Publicación eliminada de favoritos"
+        )
+
+    else:
+
+        # Si todavía no es favorita, la agregamos
+        publicacion.favoritos.add(request.user)
+
+        messages.success(
+            request,
+            "Publicación agregada a favoritos"
+        )
+
+    return redirect(
+        request.POST.get("next") or "lista_publicaciones"
+    )
+
+# ==========================================
+# MIS PUBLICACIONES FAVORITAS
+# ==========================================
+
+@login_required
+def mis_favoritos(request):
+
+    publicaciones_favoritas = request.user.publicaciones_guardadas.filter(
+        estado="publicado"
+    ).select_related("autor")
+
+    contexto = {
+        "publicaciones": publicaciones_favoritas
+    }
+
+    return render(
+        request,
+        "publicaciones/mis_favoritos.html",
+        contexto
+    )
+
 
 
 # ==========================================

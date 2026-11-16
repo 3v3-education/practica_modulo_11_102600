@@ -1,8 +1,351 @@
 {% extends "publicaciones/base.html" %}
+
 {% block title %}
 Inicio | Glups
 {% endblock %}
-{% block content %}    
-<h2>Bienvenido a Glups</h2>    
-<p>Este es el inicio del proyecto.</p>
+
+{% block content %}
+
+<!-- Sección de bienvenida -->
+<section class="welcome-section">
+
+    <div class="welcome-content">
+
+        <span class="welcome-tag">TU ESPACIO DIGITAL</span>
+
+        <h2>¡Bienvenido a Glups!</h2>
+
+        <p>
+            Descubrí publicaciones, compartí tus ideas
+            y conectate con nuestra comunidad.
+        </p>
+
+        <a href="{% url 'lista_publicaciones' %}"
+           class="welcome-button">
+            Explorar publicaciones
+        </a>
+
+    </div>
+
+</section>
+
+<!-- ESTADISTICAS DE GLUPS -->
+<section class="home-stats">
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            <span>▤</span>
+        </div>
+
+        <div class="stat-info">
+            <span class="stat-number">
+                {{ total_publicaciones }}
+            </span>
+
+            <span class="stat-label">
+                Publicaciones
+            </span>
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            <span>♧</span>
+        </div>
+
+        <div class="stat-info">
+            <span class="stat-number">
+                {{ total_autores }}
+            </span>
+
+            <span class="stat-label">
+                Autores
+            </span>
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            <span>♙</span>
+        </div>
+
+        <div class="stat-info">
+            <span class="stat-number">
+                {{ total_miembros }}
+            </span>
+
+            <span class="stat-label">
+                Miembros registrados
+            </span>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ACCESOS RAPIDOS -->
+<section class="quick-access-section">
+
+    <div class="section-heading">
+        <div>
+            <h2>Explorá Glups</h2>
+            <p>Encontrá contenido y descubrí nuestra comunidad.</p>
+        </div>
+    </div>
+
+    <div class="quick-access-grid">
+
+        <!-- Explorar publicaciones -->
+        <a href="{% url 'lista_publicaciones' %}"
+           class="quick-access-card">
+
+            <div class="quick-access-icon">
+                <span>▤</span>
+            </div>
+
+            <h3>Publicaciones</h3>
+
+            <p>
+                Explorá ideas, experiencias y contenidos compartidos.
+            </p>
+
+            <span class="quick-access-link">
+                Explorar contenido →
+            </span>
+
+        </a>
+
+
+        <!-- Explorar autores -->
+        <a href="{% url 'lista_autores' %}"
+           class="quick-access-card">
+
+            <div class="quick-access-icon">
+                <span>♧</span>
+            </div>
+
+            <h3>Autores</h3>
+
+            <p>
+                Conocé a las personas que forman parte de Glups.
+            </p>
+
+            <span class="quick-access-link">
+                Descubrir autores →
+            </span>
+
+        </a>
+
+
+        <!-- Crear publicación: solo usuarios autenticados -->
+        {% if user.is_authenticated %}
+
+            <a href="{% url 'crear_publicacion' %}"
+               class="quick-access-card quick-access-highlight">
+
+                <div class="quick-access-icon">
+                    <span>＋</span>
+                </div>
+
+                <h3>Crear publicación</h3>
+
+                <p>
+                    Compartí tus ideas y sumá contenido a la comunidad.
+                </p>
+
+                <span class="quick-access-link">
+                    Crear contenido →
+                </span>
+
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+
+<!-- Sección de publicaciones recientes -->
+<section class="recent-section">
+
+    <div class="section-heading">
+
+        <div>
+            <h2>Publicaciones recientes</h2>
+            <p>Descubrí los últimos contenidos compartidos.</p>
+        </div>
+
+        <a href="{% url 'lista_publicaciones' %}"
+           class="view-all-link">
+            Ver todas →
+        </a>
+
+    </div>
+
+
+    <div class="recent-grid">
+
+        {% for publicacion in publicaciones_recientes %}
+
+<a href="{% url 'detalle_publicacion' publicacion_id=publicacion.id %}"
+   class="recent-card-link">
+
+    <article class="recent-card">
+
+        <span class="recent-label">
+            PUBLICACIÓN
+        </span>
+
+        <h3>{{ publicacion.titulo }}</h3>
+
+        <p>
+            {{ publicacion.descripcion|truncatechars:120 }}
+        </p>
+
+        <div class="recent-meta">
+
+            <span>{{ publicacion.autor }}</span>
+
+            <span>
+                {{ publicacion.fecha_creacion|date:"d/m/Y" }}
+            </span>
+
+        </div>
+
+        <span class="card-read-more">
+            Leer publicación →
+        </span>
+
+    </article>
+
+</a>
+
+        {% empty %}
+
+            <div class="empty-publications">
+
+                <h3>¡Todavía no hay publicaciones!</h3>
+
+                <p>
+                    Cuando se compartan nuevos contenidos,
+                    aparecerán aquí.
+                </p>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+<!-- COMUNIDAD -->
+<section class="community-section">
+
+    <div class="section-heading">
+
+        <div>
+            <h2>Conocé nuestra comunidad</h2>
+            <p>Descubrí quiénes comparten sus ideas en Glups.</p>
+        </div>
+
+        <a href="{% url 'lista_autores' %}"
+           class="view-all-link">
+            Ver todos →
+        </a>
+
+    </div>
+
+
+    <div class="community-grid">
+
+        {% for autor in autores_recientes %}
+
+            <a href="{% url 'perfil_autor' autor_id=autor.id %}"
+               class="community-card">
+
+                {% if autor.imagen %}
+
+                    <img
+                        src="{{ autor.imagen.url }}"
+                        alt="Foto de {{ autor.nombre }} {{ autor.apellido }}"
+                        class="community-avatar">
+
+                {% else %}
+
+                    <div class="community-avatar-placeholder">
+                        {{ autor.nombre|first|upper }}{{ autor.apellido|first|upper }}
+                    </div>
+
+                {% endif %}
+
+                <h3>{{ autor.nombre }} {{ autor.apellido }}</h3>
+
+                <span>Ver perfil →</span>
+
+            </a>
+
+        {% empty %}
+
+            <div class="empty-community">
+                <h3>¡Sé parte de nuestra comunidad!</h3>
+                <p>Los perfiles de los autores aparecerán aquí.</p>
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+<!-- LLAMADA A LA ACCION -->
+<section class="home-cta">
+
+    <div class="home-cta-content">
+
+        {% if user.is_authenticated %}
+
+            <h2>¡Tus ideas también forman parte de Glups!</h2>
+
+            <p>
+                Compartí tus conocimientos y seguí descubriendo
+                lo que nuestra comunidad tiene para ofrecer.
+            </p>
+
+            <a href="{% url 'crear_publicacion' %}"
+               class="cta-button">
+                Compartir una idea
+            </a>
+
+        {% else %}
+
+            <h2>¡Sumate a la comunidad Glups!</h2>
+
+            <p>
+                Creá tu cuenta, compartí tus ideas y descubrí
+                todo lo que nuestra comunidad tiene para ofrecer.
+            </p>
+
+            <a href="{% url 'registro' %}"
+               class="cta-button">
+                Crear mi cuenta
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+
+
 {% endblock %}
