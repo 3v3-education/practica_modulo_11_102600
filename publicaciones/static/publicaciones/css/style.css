@@ -145,7 +145,6 @@ body {
 /* 6. Títulos dentro del contenido */
 .site-main h2 {
     margin-bottom: 24px;
-    color: #f5dbf5;
     font-size: clamp(1.7rem, 4vw, 2.4rem);
     line-height: 1.25;
     letter-spacing: -0.7px;
@@ -797,6 +796,7 @@ body {
 .welcome-content h2 {
     font-size: clamp(30px, 4vw, 44px);
     margin-bottom: 16px;
+    color: #e8e1ef;
 }
 
 .welcome-content p {
@@ -838,7 +838,7 @@ body {
 }
 
 .section-heading h2 {
-    color: #f1f1f1;
+    color: #393939;
     font-size: 25px;
     margin-bottom: 7px;
 }
