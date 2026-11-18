@@ -604,7 +604,8 @@ def editar_publicacion(request, id):
 
     publicacion = get_object_or_404(
         Publicacion,
-        id=id
+        id=id,
+        autor_usuario = request.user
     )
 
     if request.method == "POST":
@@ -637,20 +638,22 @@ def editar_publicacion(request, id):
 # ==========================================
 
 @login_required
+@require_POST
 def eliminar_publicacion(request, id):
 
     publicacion = get_object_or_404(
         Publicacion,
-        id=id
+        id=id,
+        autor_usuario = request.user
     )
 
-    if request.method == "POST":
 
-        publicacion.delete()
 
-        messages.success(
+    publicacion.delete()
+
+    messages.success(
             request,
-            "La publicación fue eliminada."
+            "La publicación fue eliminada correctamente."
         )
 
     return redirect("lista_publicaciones")

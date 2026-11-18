@@ -15,7 +15,16 @@
 
 <body>
     <header class="site-header">
-        <h1>Glups</h1>
+            <!-- Logo clickeable -->
+    <a href="{% url 'inicio' %}"
+       class="header-logo"
+       aria-label="Glups - Ir al inicio">
+
+        <img
+            src="{% static 'publicaciones/img/logo-glups.png' %}"
+            alt="Logo Glups">
+
+        </a>
 
         <nav class="site-nav" aria-label="Navegación principal">
             <a href="{% url 'inicio' %}">Inicio</a>
@@ -114,16 +123,22 @@
         {% endblock %}
     </main>
 
-    {% if user.is_authenticated %}
-        <a href="{% url 'lista_mensajes' %}"
-           class="floating-message-button"
-           aria-label="Ir a mensajes"
-           title="Ver mensajes">
+ {% if user.is_authenticated %}
+    <a href="{% url 'lista_mensajes' %}"
+       class="floating-message-button"
+       aria-label="Ir a mensajes"
+       title="Ver mensajes">
 
-            <span class="message-icon">✉</span>
+        <span class="message-icon">✉</span>
 
-        </a>
-    {% endif %}
+        {% if mensajes_no_leidos > 0 %}
+            <span class="message-notification">
+                {{ mensajes_no_leidos }}
+            </span>
+        {% endif %}
+
+    </a>
+{% endif %}
 
     <footer class="site-footer">
         <p>Creado con Django</p>

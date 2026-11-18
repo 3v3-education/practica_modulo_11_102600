@@ -1,18 +1,124 @@
 {% extends "publicaciones/base.html" %}
+
 {% block title %}
-Autores
+Autores | Glups
 {% endblock %}
-{% block content %}    
-<a href="{% url 'crear_autor' %}">+ Crear autor</a>
-<form method="GET">
-    <input type="text" name="buscar" placeholder="Buscar autor..." value="{{ request.GET.buscar|default:'' }}">
-    <button type="submit">Buscar</button>
-</form>
-{% for autor in autores %}
-<h2>{{autor.username}}</h2>
-<p>{{autor.nombre}} {{autor.apellido}} </p>
-<a href="{% url 'perfil_autor' autor.id %}">Ver perfil</a>
-{% empty %}
- <p>no se encontraron autores</p>
-{% endfor %}
+
+{% block content %}
+
+<section class="autores-container">
+
+    <!-- Encabezado de la sección -->
+    <div class="autores-header">
+
+        <div>
+            <span class="autores-eyebrow">COMUNIDAD GLUPS</span>
+            <h1>Conocé a nuestros autores</h1>
+            <p>Descubrí las personas que forman parte de nuestra comunidad.</p>
+        </div>
+
+        <a href="{% url 'crear_autor' %}" class="btn-crear-autor">
+            <span>+</span>
+            Crear autor
+        </a>
+
+    </div>
+
+    <!-- Buscador -->
+    <form method="GET" class="autores-search">
+
+        <div class="search-input-wrapper">
+
+            <span class="search-icon">⌕</span>
+
+            <input
+                type="text"
+                name="buscar"
+                placeholder="Buscar por nombre o usuario..."
+                value="{{ request.GET.buscar|default:'' }}"
+            >
+
+        </div>
+
+        <button type="submit" class="btn-buscar-autor">
+            Buscar
+        </button>
+
+        {% if request.GET.buscar %}
+            <a href="{% url 'lista_autores' %}" class="btn-limpiar-busqueda">
+                Limpiar
+            </a>
+        {% endif %}
+
+    </form>
+
+    <!-- Listado de autores -->
+    <div class="autores-grid">
+
+        {% for autor in autores %}
+
+            <article class="autor-card">
+
+                <div class="autor-avatar">
+
+                    {% if autor.imagen %}
+                        <img
+                            src="{{ autor.imagen.url }}"
+                            alt="Foto de perfil de {{ autor.username }}"
+                        >
+                    {% else %}
+                        <span>
+                            {{ autor.username|first|upper }}
+                        </span>
+                    {% endif %}
+
+                </div>
+
+                <div class="autor-info">
+
+                    <h2>
+                        {{ autor.nombre }} {{ autor.apellido }}
+                    </h2>
+
+                    <p class="autor-username">
+                        @{{ autor.username }}
+                    </p>
+
+                </div>
+
+                <a
+                    href="{% url 'perfil_autor' autor.id %}"
+                    class="btn-ver-perfil"
+                >
+                    Ver perfil
+                    <span>→</span>
+                </a>
+
+            </article>
+
+        {% empty %}
+
+            <div class="autores-empty">
+
+                <span class="empty-icon">♙</span>
+
+                <h2>No encontramos autores</h2>
+
+                <p>
+                    {% if request.GET.buscar %}
+                        No hay autores que coincidan con tu búsqueda.
+                        Probá con otro nombre o usuario.
+                    {% else %}
+                        Todavía no hay autores registrados en Glups.
+                    {% endif %}
+                </p>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
 {% endblock %}
